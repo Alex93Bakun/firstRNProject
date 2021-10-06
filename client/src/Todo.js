@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import axios from "axios";
 
 export const Todo = ({ todo, onRemove, onComplete }) => {
     const [todoStyle, setTodoStyle] = useState(true);
@@ -8,16 +9,16 @@ export const Todo = ({ todo, onRemove, onComplete }) => {
         setTodoStyle(todo.completed);
     }, [todo]);
 
-    const onPressHandler = (id) => {
-        onComplete(id);
+    const onPressHandler = async (id, isCompleted) => {
+        onComplete(id, isCompleted);
         setTodoStyle(todo.completed);
     };
 
     return (
         <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() => onPressHandler(todo.id)}
-            onLongPress={() => onRemove(todo.id)}
+            onPress={() => onPressHandler(todo._id, todo.completed)}
+            onLongPress={() => onRemove(todo._id)}
         >
             <View style={todoStyle ? styles.complete : styles.todo}>
                 <Text

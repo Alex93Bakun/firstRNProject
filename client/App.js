@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Badge } from 'react-native-elements';
 import { StatusBar } from 'expo-status-bar';
 
 import { Navbar } from './src/Navbar';
@@ -8,35 +7,84 @@ import { Add } from './src/Add';
 import { Todo } from './src/Todo';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://192.168.0.170:5000/api';
+
 export default function App() {
     const [todoLists, setTodoLists] = useState([]);
     const [todos, setTodos] = useState([]);
+    const [fetch, setFetch] = useState(false);
+
+    useEffect(() => {
+        let clean = false;
+
+        const fetchTodos = async () => {
+            try {
+                const { data } = await axios.get('/todos');
+
+                setTodos(data);
+            } catch (error) {
+                console.log(
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message
+                );
+            }
+        };
+
+        fetchTodos();
+
+        return () => {
+            clean = true;
+        };
+    }, [fetch]);
 
     const addTodo = async (title) => {
-        setTodos((prev) => [
-            ...prev,
-            {
-                id: Date.now().toString(),
-                title,
-                completed: false,
-            },
-        ]);
-
         try {
-            await axios.post('/api/todos/', {title});
-            console.log('data', data);
-        } catch (e) {
-            e.response && e.response.data.message
-                ? console.log(e.response.data.message)
-                : console.log(e.message);
+            setFetch(true);
+            const { data } = await axios.post('/todos', { title });
+
+            if (data) {
+                setTodos((prev) => [
+                    ...prev,
+                    {
+                        id: Date.now().toString(),
+                        title,
+                        completed: false,
+                    },
+                ]);
+            }
+            setFetch(false);
+        } catch (error) {
+            console.log(
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            );
         }
     };
 
-    const remove = (id) => {
+    const remove = async (id) => {
+        setFetch(true);
+        await axios.delete(`/todos/${id}`);
+        setFetch(false);
         setTodos((prev) => prev.filter((todo) => todo.id !== id));
     };
 
-    const complete = (id) => {
+    const complete = async (id, isCompleted) => {
+        try {
+            setFetch(true);
+            const { data } = await axios.put(`/todos/${id}`, {
+                completed: !isCompleted,
+            });
+            setFetch(false);
+        } catch (error) {
+            console.log(
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            );
+        }
+
         const switchComplete = todos.find((todo) => todo.id === id);
         todos.forEach((todo) => {
             if (todo.id === id) {
@@ -57,9 +105,12 @@ export default function App() {
                             todo={item}
                             onRemove={remove}
                             onComplete={complete}
+                            key={item.id}
                         />
                     )}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => {
+                        return index.toString();
+                    }}
                 />
             </View>
             <StatusBar style="auto" />
