@@ -8,7 +8,7 @@ const todoSchema = mongoose.Schema(
 			type: String,
 			required: true
 		},
-		isChecked: {
+		completed: {
 			type: Boolean,
 			default: false
 		}

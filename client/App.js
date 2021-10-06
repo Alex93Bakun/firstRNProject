@@ -23,12 +23,12 @@ export default function App() {
         ]);
 
         try {
-            const { data } = await axios.get('/api/todos/');
+            await axios.post('/api/todos/', {title});
             console.log('data', data);
         } catch (e) {
-            return e.response && e.response.data.message
-                ? e.response.data.message
-                : e.message;
+            e.response && e.response.data.message
+                ? console.log(e.response.data.message)
+                : console.log(e.message);
         }
     };
 

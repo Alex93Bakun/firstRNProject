@@ -43,12 +43,12 @@ const createTodo = asyncHandler(async (req, res) => {
 // @route   PUT /api/todos/:id
 // @access  Private
 const updateTodo = asyncHandler(async (req, res) => {
-	const { isChecked } = req.body
+	const { completed } = req.body
 
 	const todo = await Todo.findById(req.params.id)
 
 	if (todo) {
-		todo.isChecked = isChecked
+		todo.completed = completed
 
 		await todo.save()
 		res.json(true)
