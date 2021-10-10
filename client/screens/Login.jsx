@@ -126,10 +126,6 @@ const Login = ({ navigation }) => {
             <StyledContainer>
                 <StatusBar style="dark" />
                 <InnerContainer>
-                    <PageLogo
-                        resizeMode="cover"
-                        source={require('./../assets/img/expo-bg1.png')}
-                    />
                     <PageTitle>Flower Crib</PageTitle>
                     <SubTitle>Account Login</SubTitle>
 

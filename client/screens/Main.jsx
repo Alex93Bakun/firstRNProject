@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Add} from "../src/Add";
-import {FlatList} from "react-native";
-import {Todo} from "../src/Todo";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { FlatList } from 'react-native';
+import axios from 'axios';
 
-const Welcome = () => {
+import { Add } from '../src/Add';
+import { Todo } from '../src/Todo';
+
+const Main = () => {
     const [todos, setTodos] = useState([]);
     const [fetch, setFetch] = useState(false);
 
@@ -13,7 +14,9 @@ const Welcome = () => {
 
         const fetchTodos = async () => {
             try {
-                const { data } = await axios.get('/todos');
+                const { data } = await axios.get(
+                    'https://first-rn-project.herokuapp.com/api/todos'
+                );
 
                 setTodos(data);
             } catch (error) {
@@ -35,7 +38,10 @@ const Welcome = () => {
     const addTodo = async (title) => {
         try {
             setFetch(true);
-            const { data } = await axios.post('/todos', { title });
+            const { data } = await axios.post(
+                'https://first-rn-project.herokuapp.com/api/todos',
+                { title }
+            );
 
             if (data) {
                 setTodos((prev) => [
@@ -59,7 +65,9 @@ const Welcome = () => {
 
     const remove = async (id) => {
         setFetch(true);
-        await axios.delete(`/todos/${id}`);
+        await axios.delete(
+            `https://first-rn-project.herokuapp.com/api/todos/${id}`
+        );
         setFetch(false);
         setTodos((prev) => prev.filter((todo) => todo.id !== id));
     };
@@ -67,9 +75,12 @@ const Welcome = () => {
     const complete = async (id, isCompleted) => {
         try {
             setFetch(true);
-            const { data } = await axios.put(`/todos/${id}`, {
-                completed: !isCompleted,
-            });
+            const { data } = await axios.put(
+                `https://first-rn-project.herokuapp.com/api/todos/${id}`,
+                {
+                    completed: !isCompleted,
+                }
+            );
             setFetch(false);
         } catch (error) {
             console.log(
@@ -108,4 +119,4 @@ const Welcome = () => {
     );
 };
 
-export default Welcome;
+export default Main;

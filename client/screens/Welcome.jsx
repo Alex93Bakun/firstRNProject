@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
+import Main from './Main';
+
 import {
-    Avatar,
     ButtonText,
     InnerContainer,
     Line,
@@ -11,7 +12,6 @@ import {
     StyledFormArea,
     SubTitle,
     WelcomeContainer,
-    WelcomeImage,
 } from '../components/styles';
 
 // Async storage
@@ -19,19 +19,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
+import { useNavigation } from '@react-navigation/native';
 
 const Welcome = () => {
+    const navigation = useNavigation();
     // credentials context
     const { storedCredentials, setStoredCredentials } =
         useContext(CredentialsContext);
 
     const { name, email, photoUrl } = storedCredentials;
-
-    const AvatarImg = photoUrl
-        ? {
-              uri: photoUrl,
-          }
-        : require('./../assets/img/expo-bg1.png');
 
     const clearLogin = () => {
         AsyncStorage.removeItem('flowerCribCredentials')
@@ -45,22 +41,20 @@ const Welcome = () => {
         <>
             <StatusBar style="light" />
             <InnerContainer>
-                <WelcomeImage
-                    resizeMode="cover"
-                    source={require('./../assets/img/expo-bg2.png')}
-                />
-
                 <WelcomeContainer>
                     <PageTitle welcome={true}>Welcome! Buddy</PageTitle>
                     <SubTitle welcome={true}>{name}</SubTitle>
                     <SubTitle welcome={true}>{email}</SubTitle>
 
                     <StyledFormArea>
-                        <Avatar resizeMode="cover" source={AvatarImg} />
-
                         <Line />
                         <StyledButton onPress={clearLogin}>
                             <ButtonText>Logout</ButtonText>
+                        </StyledButton>
+                        <StyledButton
+                            onPress={() => navigation.navigate(Main)}
+                        >
+                            <ButtonText>Start to work</ButtonText>
                         </StyledButton>
                     </StyledFormArea>
                 </WelcomeContainer>

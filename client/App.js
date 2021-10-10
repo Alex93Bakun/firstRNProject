@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // React navigation stack
 import RootStack from './navigators/RootStack';
 
-// apploading
+// appLoading
 import AppLoading from 'expo-app-loading';
 
 // async-storage
@@ -14,7 +14,7 @@ import { CredentialsContext } from './components/CredentialsContext';
 
 export default function App() {
     const [appReady, setAppReady] = useState(false);
-    const [storedCredentials, setStoredCredentials] = useState("");
+    const [storedCredentials, setStoredCredentials] = useState('');
 
     const checkLoginCredentials = () => {
         AsyncStorage.getItem('flowerCribCredentials')
@@ -29,11 +29,19 @@ export default function App() {
     };
 
     if (!appReady) {
-        return <AppLoading startAsync={checkLoginCredentials} onFinish={() => setAppReady(true)} onError={console.warn} />;
+        return (
+            <AppLoading
+                startAsync={checkLoginCredentials}
+                onFinish={() => setAppReady(true)}
+                onError={console.warn}
+            />
+        );
     }
 
     return (
-        <CredentialsContext.Provider value={{ storedCredentials, setStoredCredentials }}>
+        <CredentialsContext.Provider
+            value={{ storedCredentials, setStoredCredentials }}
+        >
             <RootStack />
         </CredentialsContext.Provider>
     );
