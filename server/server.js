@@ -1,33 +1,22 @@
-import dotenv from "dotenv";
-import morgan from "morgan";
-import express from "express";
-import cors from "cors";
-import colors from "colors";
-import connectDB from "./config/db.js";
-import { DEVELOPMENT } from "./config/constants.js";
-import { errorHandler, notFound } from "./middleware/errorMIddleware.js";
+// mongodb
+require("./config/db");
 
-import toDoRoutes from "./routes/todo/toDoRoutes.js";
-
-dotenv.config();
-connectDB();
-
-const app = express();
-app.use(cors());
-
-if (process.env.NODE_ENV === DEVELOPMENT) app.use(morgan("dev"));
-
-app.use(express.json());
-
-app.use("/api/todos", toDoRoutes);
-
-app.use(notFound);
-app.use(errorHandler);
-
+const app = require("express")();
 const PORT = process.env.PORT || 5000;
 
+//cors
+const cors = require("cors");
+app.use(cors());
+
+const UserRouter = require("./api/User");
+const TodoRouter = require("./routes/todo/todoRoutes");
+
+// For accepting post form data
+app.use(require("express").json());
+
+app.use("/api/todos", TodoRouter);
+app.use("/api/user", UserRouter);
+
 app.listen(PORT, () => {
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
-  );
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

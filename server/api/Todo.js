@@ -1,18 +1,14 @@
-import asyncHandler from 'express-async-handler'
-import Todo from '../../models/todo/todoModel.js'
+const asyncHandler = require('express-async-handler');
+const Todo = require('../models/Todo.js');
 
-// @desc    Get all todos
 // @route   GET /api/todos
-// @access  Private
 const getTodos = asyncHandler(async (req, res) => {
 	const todos = await Todo.find({}).sort({ createdAt: 'desc' }).exec()
 
 	res.json(todos || [])
 })
 
-// @desc    Delete todo
 // @route   DELETE /api/todos/:id
-// @access  Private
 const deleteTodo = asyncHandler(async (req, res) => {
 	const todo = await Todo.findById(req.params.id)
 
@@ -25,9 +21,7 @@ const deleteTodo = asyncHandler(async (req, res) => {
 	}
 })
 
-// @desc    Create todo
 // @route   POST /api/todos
-// @access  Private
 const createTodo = asyncHandler(async (req, res) => {
 	const { title } = req.body
 
@@ -39,9 +33,7 @@ const createTodo = asyncHandler(async (req, res) => {
 	res.status(201).json(createdTodo)
 })
 
-// @desc    Update todo
 // @route   PUT /api/todos/:id
-// @access  Private
 const updateTodo = asyncHandler(async (req, res) => {
 	const { completed } = req.body
 
@@ -58,4 +50,4 @@ const updateTodo = asyncHandler(async (req, res) => {
 	}
 })
 
-export { getTodos, deleteTodo, createTodo, updateTodo }
+module.exports = { getTodos, deleteTodo, createTodo, updateTodo }
